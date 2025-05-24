@@ -81,7 +81,7 @@ def dashboard():
             labels = [row['tanggal'].strftime('%d %b') for row in rows]
         data = [row['total'] for row in rows]
 
-    # --- Data Pendapatan Bulanan (12 bulan terakhir) ---
+    # --- Data Pendapatan Bulanan ---
     cursor.execute("""
         SELECT DATE_FORMAT(waktu, '%Y-%m') AS bulan, SUM(subtotal) AS total
         FROM transaksi
@@ -104,8 +104,8 @@ def dashboard():
     key_bulan_ini = now.strftime('%Y-%m')
     total_bulan_ini = pendapatan_per_bulan.get(key_bulan_ini, 0)
 
-    # --- Data Pendapatan Mingguan (7 hari terakhir) ---
-    # Ambil tanggal 7 hari terakhir
+    # --- Data Pendapatan Mingguan ---
+    #
     tanggal_sekarang = now.date()
     tanggal_7_hari_lalu = tanggal_sekarang - timedelta(days=6)
 
@@ -118,7 +118,7 @@ def dashboard():
     """, (tanggal_7_hari_lalu, tanggal_sekarang))
     rows_mingguan = cursor.fetchall()
 
-    # Buat dict tanggal -> total pendapatan
+    
     pendapatan_per_hari_mingguan = {row['tanggal'].strftime('%Y-%m-%d') if hasattr(row['tanggal'], 'strftime') else row['tanggal']: row['total'] for row in rows_mingguan}
 
     labels_mingguan = []
@@ -129,7 +129,7 @@ def dashboard():
         key = day.strftime('%Y-%m-%d')
         data_mingguan.append(pendapatan_per_hari_mingguan.get(key, 0))
 
-    # Total pendapatan minggu ini
+  
     total_mingguan = sum(data_mingguan)
 
     cursor.close()
@@ -202,7 +202,6 @@ def index():
 
     return render_template('index.html', tickets=tickets, total=None)
 
-# Cetak karcis
 # Cetak karcis
 @app.route('/print_ticket')
 def print_ticket():
@@ -279,7 +278,7 @@ def terbilang(n):
             return "Angka terlalu besar"
 
     result = _to_words(n).strip()
-    # Perbaiki spasi ganda dan hilangkan spasi di akhir
+    
     while "  " in result:
         result = result.replace("  ", " ")
     return result if result != "" else "Nol"
