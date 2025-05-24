@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cetak Karcis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        .karcis-container {
+            border: 2px dashed black;
+            padding: 20px 30px;
+            width: 450px;
+            position: relative;
+
+            background-image: url('{{ url_for("static", filename="bg.jpeg") }}');
+            background-size: cover;     
+            background-position: center; 
+            background-repeat: no-repeat;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .karcis-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,0.7); 
+            pointer-events: none; 
+            z-index: 0;
+        }
+        .karcis-container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .judul-container {
+            border: 2px solid black;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .judul-container h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .judul-container p {
+            margin: 5px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .info {
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .info1 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .note {
+            font-style: italic;
+            margin: 20px 0;
+            text-align: center; 
+            font-size: 14px;
+        }
+        .stempel {
+            border: 2px solid red;
+            color: red;
+            display: inline-block;
+            padding: 8px;
+            transform: rotate(-5deg);
+            font-weight: bold;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .btn-container {
+            margin-top: 30px;
+        }
+        .btn-container a, .btn-container button {
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 25px;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.4);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Ini agar tombol tidak tercetak */
+        @media print {
+            .btn-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="karcis-container">
+    <div class="judul-container">
+        <h2>Tanda Masuk</h2>
+        <p>PEMANDIAN ALAM BANGA</p>
+        <p>Desa Gattareng Toa, Kec. Marioriwawo</p>
+    </div>
+
+    <div class="info"><strong>No Tiket:</strong> {{ nomor_karcis }}</div>
+    <div class="info1"><strong>Rp.{{ "{:,.0f}".format(total) }} ({{ terbilang_total }})</strong></div>
+    <div class="info note"></div>
+
+    <div class="note">(Untuk Sekali Masuk)</div>
+
+    <div class="stempel">
+        {{ waktu.split(' ')[0] }}<br>Masuk
+    </div>
+</div>
+
+<div class="btn-container">
+    <button onclick="window.print()">🖨️ Cetak Karcis</button>
+    <a href="{{ url_for('index') }}">🔙 Kembali</a>
+</div>
+
+</body>
+</html>
